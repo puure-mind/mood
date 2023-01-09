@@ -1,22 +1,25 @@
-import { makeAutoObservable, autorun } from 'mobx'
-import { inject, injectable, singleton } from 'tsyringe'
-import { Home } from './home'
+import { inject, injectable } from 'inversify';
+import { autorun, makeAutoObservable } from 'mobx';
+import 'reflect-metadata';
+import type { IHome, ILogin } from '../interfaces/interfaces'
 
-@singleton()
-export class Login {
+@injectable()
+export class Login implements ILogin {
   userName: string = 'Bearer';
 
-  constructor (@inject(Home) private readonly homeStore: Home) {
+  constructor (
+    @inject(Symbol.for('IHome')) private readonly homeStore: IHome
+  ) {
     makeAutoObservable(this);
     autorun(() => {
-      if (this.userName === 'logged user') {
-        // homeStore.changeMessage('logged success');
+      if (this.userName === 'logged user' && homeStore !== undefined) {
+        homeStore.changeMessage('logged success');
       }
-    })
+    });
   }
 
   login = (): void => {
     console.log('logged');
     this.userName = 'logged user';
-  }
+  };
 }

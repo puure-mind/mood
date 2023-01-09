@@ -1,12 +1,12 @@
 import React from 'react'
 import './App.css'
-import logo from './logo.svg'
-import { RootContext, rootStore, useStores } from './mobx/root'
 import { observer } from 'mobx-react-lite'
+import { RootContext, rootStore, useStores } from './inversify/inversify.config'
 
 const App = (): JSX.Element => {
+  const root = rootStore;
   return (
-    <RootContext.Provider value={rootStore}>
+    <RootContext.Provider value={ root }>
       <IndexPage/>
     </RootContext.Provider>
   )

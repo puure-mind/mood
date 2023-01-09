@@ -1,26 +1,14 @@
-import 'reflect-metadata'
 import { createContext } from 'react'
-import { Home } from './services/home'
-import { Login } from './services/login'
-import { container } from 'tsyringe'
+import 'reflect-metadata';
+import { rootContainer } from '../inversify/inversify.config'
+import type { IHome, ILogin, IRootStore } from './interfaces/interfaces'
+import { TYPES } from '../inversify/types'
+import { inject, injectable } from 'inversify'
+import { makeAutoObservable } from 'mobx'
 
-container.register<Home>(Home, { useClass: Home });
-container.register<Login>(Login, { useClass: Login });
-
-class RootStore {
-  homeStore;
-  loginStore;
-
-  constructor () {
-    this.loginStore = container.resolve(Login);
-    this.homeStore = container.resolve(Home);
-    // this.loginStore = new Login(this.homeStore);
+@injectable()
+export class RootStore implements IRootStore {
+  constructor (@inject(TYPES.IHome) public readonly homeStore: IHome, @inject(TYPES.ILogin) public readonly loginStore: ILogin) {
+    makeAutoObservable(this);
   }
-}
-
-export const rootStore = new RootStore();
-export const RootContext = createContext<RootStore>(rootStore);
-
-export const useStores = (): RootStore => {
-  return rootStore;
 }

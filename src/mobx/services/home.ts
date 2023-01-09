@@ -1,8 +1,10 @@
 import { makeAutoObservable } from 'mobx';
-import { singleton } from 'tsyringe'
+import 'reflect-metadata';
+import { injectable } from 'inversify'
+import { IHome } from '../interfaces/interfaces'
 
-@singleton()
-export class Home {
+@injectable()
+export class Home implements IHome {
   message: string = 'not logged';
 
   constructor () {
